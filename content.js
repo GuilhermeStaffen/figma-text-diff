@@ -6,11 +6,13 @@ chrome.runtime.onMessage.addListener((message) => {
 
   const expectedTexts = message.payload.texts || [];
 
+  const options = message.options || {};
+
   const elements = getTextElements();
 
   const pageTexts = elements.map(el => ({
     element: el,
-    text: normalize(el.innerText),
+    text: normalize(el.innerText, options),
     original: el.innerText
   }));
 
@@ -18,7 +20,7 @@ chrome.runtime.onMessage.addListener((message) => {
 
   expectedTexts.forEach(expected => {
 
-    const normalizedExpected = normalize(expected);
+    const normalizedExpected = normalize(expected, options);
 
     let best = null;
     let bestScore = 0;
@@ -119,12 +121,21 @@ function getTextElements() {
     });
 }
 
-function normalize(text) {
+function normalize(text, options) {
+
+  if (!options.caseSensitive) {
+    text = text.toLowerCase();
+  }
+
+  if (!options.accentSensitive) {
+    text = text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
 
   return text
     .replace(/\s+/g, ' ')
-    .trim()
-    .toLowerCase();
+    .trim();
 }
 
 function isVisible(el) {
@@ -185,6 +196,9 @@ function removeOldHighlights() {
   document
     .querySelectorAll('.figma-floating-alert')
     .forEach(el => el.remove());
+
+  const tooltip = document.getElementById('figma-dynamic-tooltip');
+  if (tooltip) tooltip.style.display = 'none';
 }
 
 function createFloatingAlert(expected) {
@@ -194,7 +208,7 @@ function createFloatingAlert(expected) {
   div.className = 'figma-floating-alert';
 
   div.innerText =
-`Texto não encontrado
+    `Texto não encontrado
 
 ${expected}`;
 
@@ -237,3 +251,53 @@ function levenshtein(a, b) {
 
   return matrix[b.length][a.length];
 }
+
+// --- GESTÃO DINÂMICA DO TOOLTIP ---
+document.addEventListener('mouseover', (e) => {
+  const target = e.target.closest('[data-figma-diff]');
+  if (!target) return;
+
+  const tooltipText = target.getAttribute('data-figma-diff');
+  if (!tooltipText) return;
+
+  let tooltip = document.getElementById('figma-dynamic-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = 'figma-dynamic-tooltip';
+    document.body.appendChild(tooltip);
+  }
+
+  tooltip.innerText = tooltipText;
+  tooltip.style.display = 'block';
+
+  const rect = target.getBoundingClientRect();
+  const tooltipRect = tooltip.getBoundingClientRect();
+
+  // Verifica se há espaço para renderizar abaixo do elemento
+  if (rect.bottom + tooltipRect.height + 10 < window.innerHeight) {
+    tooltip.style.top = `${rect.bottom + 10}px`;
+  } else {
+    // Caso contrário, renderiza para cima do elemento
+    tooltip.style.top = `${rect.top - tooltipRect.height - 10}px`;
+  }
+
+  // Garante que o tooltip nunca ultrapasse o limite direito da janela
+  if (rect.left + tooltipRect.width > window.innerWidth) {
+    tooltip.style.left = `${window.innerWidth - tooltipRect.width - 10}px`;
+  } else {
+    tooltip.style.left = `${rect.left}px`;
+  }
+});
+
+document.addEventListener('mouseout', (e) => {
+  const target = e.target.closest('[data-figma-diff]');
+  if (!target) return;
+
+  // Evita o flickering caso o usuário mova o cursor entre filhos internos do target
+  if (e.relatedTarget && target.contains(e.relatedTarget)) {
+    return;
+  }
+
+  const tooltip = document.getElementById('figma-dynamic-tooltip');
+  if (tooltip) tooltip.style.display = 'none';
+});

@@ -10,31 +10,19 @@
   position: relative !important;
 }
 
-.figma-diff-success:hover::after,
-.figma-diff-warning:hover::after {
-
-  content: attr(data-figma-diff);
-
-  position: absolute;
-
-  top: 100%;
-  left: 0;
-
+#figma-dynamic-tooltip {
+  position: fixed;
   z-index: 999999;
-
   background: #111;
   color: white;
-
   padding: 10px;
-
   border-radius: 8px;
-
   white-space: pre-wrap;
-
   min-width: 260px;
-
   font-size: 12px;
   line-height: 1.5;
+  display: none;
+  pointer-events: none;
 }
 
 .figma-floating-alert {

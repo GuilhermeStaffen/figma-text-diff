@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
 
   <title>Figma Text Diff</title>
 
   <style>
-
     body {
       width: 340px;
       font-family: Arial, sans-serif;
@@ -53,7 +53,6 @@
 
       color: #666;
     }
-
   </style>
 </head>
 
@@ -63,16 +62,20 @@
 
   <div class="switch-container">
 
-    <input
-      type="checkbox"
-      id="plainMode"
-      checked
-    />
-
+    <input type="checkbox" id="plainMode" checked />
     <label for="plainMode">
       Texto simples
     </label>
 
+    <input type="checkbox" id="caseSensitive" checked />
+    <label for="caseSensitive">
+      Diferenciar maiúsculas de minúsculas
+    </label>
+
+    <input type="checkbox" id="accentSensitive" checked />
+    <label for="accentSensitive">
+      Identificar acentuação
+    </label>
   </div>
 
   <textarea id="baseline"></textarea>
@@ -93,4 +96,5 @@
   <script src="popup.js"></script>
 
 </body>
+
 </html>

@@ -7,6 +7,16 @@ document
         .getElementById('baseline')
         .value;
 
+    const caseSensitive =
+      document
+        .getElementById('caseSensitive')
+        .checked;
+
+    const accentSensitive =
+      document
+        .getElementById('accentSensitive')
+        .checked;
+
     const plainMode =
       document
         .getElementById('plainMode')
@@ -43,7 +53,6 @@ document
 
     const [tab] =
       await chrome.tabs.query({
-
         active: true,
         currentWindow: true
       });
@@ -52,7 +61,11 @@ document
       tab.id,
       {
         type: 'COMPARE_TEXTS',
-        payload: parsed
+        payload: parsed,
+        options: {
+          caseSensitive,
+          accentSensitive
+        }
       }
     );
 
