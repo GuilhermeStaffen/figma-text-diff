@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Figma Text Diff - By Guilherme Staffen",
+  "version": "1.0.0",
+  "description": "Compara textos da página com um baseline exportado do Figma.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}
