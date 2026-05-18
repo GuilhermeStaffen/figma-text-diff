@@ -50,7 +50,7 @@ chrome.runtime.onMessage.addListener((message) => {
       highlight(
         best.element,
         'success',
-        `✔ Texto OK
+        `Texto OK
 
 ${best.original}`
       );
@@ -64,7 +64,7 @@ ${best.original}`
       highlight(
         best.element,
         'warning',
-        `⚠ Texto divergente
+        `Texto divergente
 
 Esperado:
 ${expected}
