@@ -1,7 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Figma Text Diff - By Guilherme Staffen",
+  "name": "Text Diff for Figma",
   "version": "1.0.0",
+  "author": "Guilherme Staffen",
+  "icons": {
+    "16": "/images/icon.png",
+    "32": "/images/icon.png",
+    "48": "/images/icon.png",
+    "128": "/images/icon.png"
+  },
   "description": "Compara textos da página com um baseline exportado do Figma.",
   "permissions": [
     "activeTab",
@@ -13,9 +20,15 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "css": ["styles.css"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ]
     }
   ]
 }

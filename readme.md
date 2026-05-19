@@ -1,4 +1,8 @@
-# Figma Text Diff Extension
+# Text Diff for Figma
+
+---
+
+# Introdução
 
 Extensão para Google Chrome criada para auxiliar QAs na validação de textos implementados em interfaces web com base em protótipos do Figma, sem depender de comparação pixel perfect.
 
