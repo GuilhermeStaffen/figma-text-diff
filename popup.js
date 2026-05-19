@@ -1,15 +1,36 @@
 const baselineInput = document.getElementById('baseline');
+const checkboxIds = [
+  'plainMode',
+  'caseSensitive',
+  'accentSensitive',
+  'highlightUnmatched',
+  'validateValue',
+  'validatePlaceholder'
+];
 
-// Recupera o último texto salvo ao abrir o popup
-chrome.storage.local.get(['savedBaseline'], (result) => {
-  if (result.savedBaseline) {
+// Recupera o último texto e opções salvas ao abrir o popup
+chrome.storage.local.get(['savedBaseline', ...checkboxIds], (result) => {
+  if (result.savedBaseline !== undefined) {
     baselineInput.value = result.savedBaseline;
   }
+
+  checkboxIds.forEach(id => {
+    if (result[id] !== undefined) {
+      document.getElementById(id).checked = result[id];
+    }
+  });
 });
 
 // Salva o texto no storage sempre que o usuário digitar ou colar algo
 baselineInput.addEventListener('input', () => {
   chrome.storage.local.set({ savedBaseline: baselineInput.value });
+});
+
+// Salva o estado das opções sempre que houver alteração
+checkboxIds.forEach(id => {
+  document.getElementById(id).addEventListener('change', (e) => {
+    chrome.storage.local.set({ [id]: e.target.checked });
+  });
 });
 
 document

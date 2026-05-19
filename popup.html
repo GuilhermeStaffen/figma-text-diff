@@ -8,25 +8,59 @@
 
   <style>
     body {
-      width: 320px;
+      width: 340px;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      padding: 16px;
       background-color: #ffffff;
       color: #333;
       margin: 0;
+      padding: 0;
     }
 
-    h3 {
-      margin: 0 0 16px 0;
+    .top-bar {
+      background-color: #18a0fb;
+      color: white;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .top-bar h3 {
+      margin: 0;
       font-size: 16px;
       font-weight: 600;
-      color: #111;
+    }
+
+    .top-bar p {
+      margin: 4px 0 0 0;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .top-bar a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 16px 0 8px 0;
+    }
+    
+    .section-title:first-child {
+      margin-top: 0;
     }
 
     textarea {
       width: 100%;
-      height: 180px;
-      margin-top: 12px;
+      height: 140px;
+      margin-top: 8px;
       font-size: 12px;
       padding: 10px;
       border: 1px solid #e6e6e6;
@@ -63,23 +97,65 @@
     .switch-container {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      background: #f5f5f5;
-      padding: 12px;
+      background: #fafafa;
+      padding: 4px 12px;
       border-radius: 8px;
+      border: 1px solid #eee;
     }
 
     .switch-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
       font-size: 13px;
-      cursor: pointer;
+      padding: 10px 0;
     }
 
-    .switch-item input {
+    .switch-item:not(:last-child) {
+      border-bottom: 1px solid #eee;
+    }
+
+    /* Estilização do Toggle (Switch) */
+    .toggle-switch {
+      position: relative;
+      width: 34px;
+      height: 20px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
       cursor: pointer;
-      margin: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #d1d5db;
+      transition: .3s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+      background-color: #18a0fb;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(14px);
     }
 
     .hint {
@@ -95,40 +171,71 @@
 
 <body>
 
-  <h3>Figma Text Diff - By <a href="https://www.linkedin.com/in/guilhermestaffen/" target="_blank">Guilherme Staffen</a></h3>
+  <header class="top-bar">
+    <h3>Figma Text Diff</h3>
+    <p>By <a href="https://www.linkedin.com/in/guilhermestaffen/" target="_blank">Guilherme Staffen</a></p>
+  </header>
 
-  <div class="switch-container">
-    <label class="switch-item">
-      <input type="checkbox" id="plainMode" checked />
-      Texto simples
-    </label>
+  <main class="content">
 
-    <label class="switch-item">
-      <input type="checkbox" id="caseSensitive" checked />
-      Diferenciar maiúsculas/minúsculas
-    </label>
+    <div class="section-title">Modo e Precisão</div>
+    <div class="switch-container">
+      <label class="switch-item">
+        <span>Texto simples</span>
+        <div class="toggle-switch">
+          <input type="checkbox" id="plainMode" checked />
+          <span class="slider"></span>
+        </div>
+      </label>
 
-    <label class="switch-item">
-      <input type="checkbox" id="accentSensitive" checked />
-      Identificar acentuação
-    </label>
+      <label class="switch-item">
+        <span>Diferenciar maiúsculas/minúsculas</span>
+        <div class="toggle-switch">
+          <input type="checkbox" id="caseSensitive" checked />
+          <span class="slider"></span>
+        </div>
+      </label>
 
-    <label class="switch-item">
-      <input type="checkbox" id="highlightUnmatched" />
-      Destacar textos não buscados na página
-    </label>
+      <label class="switch-item">
+        <span>Identificar acentuação</span>
+        <div class="toggle-switch">
+          <input type="checkbox" id="accentSensitive" checked />
+          <span class="slider"></span>
+        </div>
+      </label>
+    </div>
 
-    <label class="switch-item">
-      <input type="checkbox" id="validateValue" />
-      Validar valores de inputs
-    </label>
+    <div class="section-title">Alvos de Busca</div>
+    <div class="switch-container">
+      <label class="switch-item">
+        <span>Validar valores de inputs</span>
+        <div class="toggle-switch">
+          <input type="checkbox" id="validateValue" />
+          <span class="slider"></span>
+        </div>
+      </label>
 
-    <label class="switch-item">
-      <input type="checkbox" id="validatePlaceholder" />
-      Validar placeholders de inputs
-    </label>
-  </div>
+      <label class="switch-item">
+        <span>Validar placeholders de inputs</span>
+        <div class="toggle-switch">
+          <input type="checkbox" id="validatePlaceholder" />
+          <span class="slider"></span>
+        </div>
+      </label>
+    </div>
 
+    <div class="section-title">Visual</div>
+    <div class="switch-container">
+      <label class="switch-item">
+        <span>Destacar textos não buscados na tela</span>
+        <div class="toggle-switch">
+          <input type="checkbox" id="highlightUnmatched" />
+          <span class="slider"></span>
+        </div>
+      </label>
+    </div>
+
+    <div class="section-title">Baseline</div>
   <textarea id="baseline" placeholder="Cole seu texto ou JSON aqui..."></textarea>
 
   <button id="compare">
@@ -143,6 +250,8 @@
     JSON -> formato:
     {"texts":[]}
   </div>
+
+  </main>
 
   <script src="popup.js"></script>
 
