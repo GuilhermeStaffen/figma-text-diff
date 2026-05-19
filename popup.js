@@ -3,6 +3,7 @@ const checkboxIds = [
   'plainMode',
   'caseSensitive',
   'accentSensitive',
+  'punctuationSensitive',
   'highlightUnmatched',
   'validateValue',
   'validatePlaceholder'
@@ -56,6 +57,11 @@ document
     const accentSensitive =
       document
         .getElementById('accentSensitive')
+        .checked;
+
+    const punctuationSensitive =
+      document
+        .getElementById('punctuationSensitive')
         .checked;
 
     const plainMode =
@@ -124,6 +130,7 @@ document
         options: {
           caseSensitive,
           accentSensitive,
+          punctuationSensitive,
           highlightUnmatched,
           validateValue,
           validatePlaceholder,

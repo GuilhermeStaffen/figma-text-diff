@@ -166,6 +166,11 @@ function normalize(text, options) {
       .replace(/[\u0300-\u036f]/g, '');
   }
 
+  // Remove pontuações comuns se a opção estiver ativada
+  if (!options.punctuationSensitive) {
+    text = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
+  }
+
   return text
     .replace(/\s+/g, ' ')
     .trim();
