@@ -173,6 +173,13 @@ function normalize(text, options) {
 
 function isVisible(el) {
 
+  // Elementos ocultos por estarem dentro de pais com "display: none"
+  // possuem dimensões zeradas na tela, não importando o CSS do próprio elemento.
+  const rect = el.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) {
+    return false;
+  }
+
   const style = window.getComputedStyle(el);
 
   return (
