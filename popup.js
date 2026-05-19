@@ -1,11 +1,22 @@
+const baselineInput = document.getElementById('baseline');
+
+// Recupera o último texto salvo ao abrir o popup
+chrome.storage.local.get(['savedBaseline'], (result) => {
+  if (result.savedBaseline) {
+    baselineInput.value = result.savedBaseline;
+  }
+});
+
+// Salva o texto no storage sempre que o usuário digitar ou colar algo
+baselineInput.addEventListener('input', () => {
+  chrome.storage.local.set({ savedBaseline: baselineInput.value });
+});
+
 document
   .getElementById('compare')
   .addEventListener('click', async () => {
 
-    const raw =
-      document
-        .getElementById('baseline')
-        .value;
+    const raw = baselineInput.value;
 
     const caseSensitive =
       document
