@@ -10,6 +10,14 @@
   position: relative !important;
 }
 
+.figma-diff-unmatched {
+  color: #9333ea !important;
+  background: rgba(168, 85, 247, 0.15) !important;
+  text-decoration: underline dashed #a855f7 !important;
+  outline: none !important;
+  position: relative !important;
+}
+
 #figma-dynamic-tooltip {
   position: fixed;
   z-index: 999999;

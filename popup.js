@@ -22,6 +22,11 @@ document
         .getElementById('plainMode')
         .checked;
 
+    const highlightUnmatched =
+      document
+        .getElementById('highlightUnmatched')
+        .checked;
+
     let parsed;
 
     try {
@@ -64,7 +69,8 @@ document
         payload: parsed,
         options: {
           caseSensitive,
-          accentSensitive
+          accentSensitive,
+          highlightUnmatched
         }
       }
     );

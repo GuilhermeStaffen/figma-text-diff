@@ -13,7 +13,8 @@ chrome.runtime.onMessage.addListener((message) => {
   const pageTexts = elements.map(el => ({
     element: el,
     text: normalize(el.innerText, options),
-    original: el.innerText
+    original: el.innerText,
+    matched: false
   }));
 
   console.log('TEXTOS ENCONTRADOS', pageTexts);
@@ -48,6 +49,7 @@ chrome.runtime.onMessage.addListener((message) => {
 
     // MATCH EXATO
     if (best.text === normalizedExpected) {
+      best.matched = true;
 
       highlight(
         best.element,
@@ -62,6 +64,7 @@ ${best.original}`
 
     // SIMILAR
     if (bestScore >= 0.75) {
+      best.matched = true;
 
       highlight(
         best.element,
@@ -85,6 +88,19 @@ ${Math.round(bestScore * 100)}%`
     createFloatingAlert(expected);
   });
 
+  // TEXTOS NÃO BUSCADOS
+  if (options.highlightUnmatched) {
+    pageTexts.forEach(item => {
+      if (!item.matched) {
+        highlight(
+          item.element,
+          'unmatched',
+          `Texto não buscado na validação\n\n${item.original}`
+        );
+      }
+    });
+  }
+
 });
 
 function getTextElements() {
@@ -103,6 +119,16 @@ function getTextElements() {
       }
 
       if (!isVisible(el)) {
+        return false;
+      }
+
+      // Garante que o elemento possui texto próprio diretamente nele
+      // Ignora containers/pais que só servem para guardar outros elementos
+      const hasDirectText = Array.from(el.childNodes).some(
+        node => node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== ''
+      );
+
+      if (!hasDirectText) {
         return false;
       }
 
@@ -158,10 +184,12 @@ function similarity(a, b) {
 
 function highlight(element, type, tooltipText) {
 
-  const className =
-    type === 'success'
-      ? 'figma-diff-success'
-      : 'figma-diff-warning';
+  let className = 'figma-diff-unmatched';
+  if (type === 'success') {
+    className = 'figma-diff-success';
+  } else if (type === 'warning') {
+    className = 'figma-diff-warning';
+  }
 
   element.classList.add(className);
 
@@ -181,13 +209,14 @@ function removeOldHighlights() {
 
   document
     .querySelectorAll(
-      '.figma-diff-success, .figma-diff-warning'
+      '.figma-diff-success, .figma-diff-warning, .figma-diff-unmatched'
     )
     .forEach(el => {
 
       el.classList.remove(
         'figma-diff-success',
-        'figma-diff-warning'
+        'figma-diff-warning',
+        'figma-diff-unmatched'
       );
 
       el.removeAttribute('data-figma-diff');
