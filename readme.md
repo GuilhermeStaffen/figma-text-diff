@@ -14,6 +14,7 @@ O objetivo é facilitar a identificação de problemas como:
 - Palavras faltando
 - Erros de digitação
 - Labels incorretas
+- Placeholders e values divergentes em formulários
 - Mudanças inesperadas de texto
 - Regressões visuais relacionadas a conteúdo textual
 
@@ -22,13 +23,15 @@ O objetivo é facilitar a identificação de problemas como:
 # Funcionalidades
 
 - Comparação de textos da aplicação com o Figma
-- Suporte a entrada em texto simples
-- Suporte a entrada em JSON
-- Destaque visual diretamente na tela
+- Validação de conteúdos de formulário (`value` e `placeholder`)
+- Suporte a entrada em texto simples ou JSON
+- Destaque visual interativo diretamente na tela
 - Comparação aproximada usando distância de Levenshtein
 - Ignora elementos invisíveis
-- Ignora textos muito grandes de containers
-- Tooltip com texto esperado vs encontrado
+- Limite de tamanho de texto configurável
+- Tooltip dinâmico de comparação (imune a cortes de tela e overflow)
+- Destaque residual para textos em tela que não foram validados
+- Memória de estado: Salva último texto colado e preferências de configuração
 - Compatível com qualquer framework frontend
 
 ---
@@ -129,8 +132,11 @@ Com a opção desabilitada, utilize o formato JSON:
 
 1. Abra a aplicação desejada
 2. Clique na extensão
-3. Cole os textos esperados
-4. Clique em "Comparar textos"
+3. Configure o modo de precisão e os alvos de busca desejados
+4. Cole os textos esperados
+5. Clique em "Comparar textos"
+
+*Nota: Suas configurações e texto base ficarão salvos automaticamente para os próximos testes.*
 
 ---
 
@@ -164,7 +170,16 @@ Resultado visual:
 Nenhum texto suficientemente parecido foi encontrado.
 
 Resultado visual:
-- Alerta flutuante
+- Alerta flutuante no canto superior direito (empilhável)
+
+---
+
+## Texto Não Buscado (Residual)
+
+Textos visíveis na tela, mas que não foram contemplados na validação (caso a opção esteja ativa na extensão).
+
+Resultado visual:
+- Cor roxa com sublinhado tracejado
 
 ---
 
@@ -244,7 +259,6 @@ O foco atual é validação textual.
 Possíveis evoluções:
 
 - Ignorar pontuação
-- Ignorar acentos
 - Exportar relatório de divergências
 - Painel lateral
 - Integração automática com API do Figma
