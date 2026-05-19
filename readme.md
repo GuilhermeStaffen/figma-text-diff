@@ -1,287 +1,199 @@
-# Text Diff for Figma
+# Figma Text Diff
 
----
+🌍 [Leia em Português (Brasil)](./docs/readme.md)
 
-# Introdução
+## Introduction
 
-Extensão para Google Chrome criada para auxiliar QAs na validação de textos implementados em interfaces web com base em protótipos do Figma, sem depender de comparação pixel perfect.
+A Google Chrome extension designed to help QA engineers and developers validate texts implemented in web interfaces against Figma prototypes, without relying on pixel-perfect comparison.
 
-A extensão compara os textos visíveis renderizados na aplicação com os textos esperados extraídos do Figma e destaca:
+The extension compares the visible text rendered on the application with the expected text extracted from Figma and highlights:
 
-- Correspondências exatas
-- Textos parecidos, mas divergentes
-- Textos não encontrados
+- Exact matches
+- Similar but divergent texts
+- Texts not found
 
-O objetivo é facilitar a identificação de problemas como:
+The goal is to easily identify issues such as:
 
-- Erros de copy
-- Palavras faltando
-- Erros de digitação
-- Labels incorretas
-- Placeholders e values divergentes em formulários
-- Mudanças inesperadas de texto
-- Regressões visuais relacionadas a conteúdo textual
+- Copywriting errors
+- Missing words
+- Typos
+- Incorrect labels
+- Divergent placeholders and values in forms
+- Unexpected text changes
+- Visual regressions related to textual content
 
----
+## Features
 
-# Funcionalidades
+- **Application vs. Figma Comparison:** Validates page texts against a baseline.
+- **Form Content Validation:** Checks `value` and `placeholder` attributes in inputs and textareas.
+- **Input Modes:** Supports both plain text (one per line) and JSON formats.
+- **Interactive Visual Highlighting:** Clear visual feedback directly on the interface.
+- **Fuzzy Matching:** Approximate comparison using the Levenshtein distance heuristic.
+- **Smart Filtering:** Ignores invisible elements and hidden containers.
+- **Customizable:** Configurable maximum text length, case/accent/punctuation sensitivity.
+- **Dynamic Tooltips:** Floating information tooltips that adapt to screen boundaries.
+- **Unmatched Text Tracking:** Residual highlighting for visible texts on the screen that weren't part of the validation set.
+- **State Memory:** Automatically saves your last pasted text and configuration preferences for your next test.
+- **Framework Agnostic:** Compatible with any frontend framework (React, Vue, Angular, Vanilla JS, etc.).
 
-- Comparação de textos da aplicação com o Figma
-- Validação de conteúdos de formulário (`value` e `placeholder`)
-- Suporte a entrada em texto simples ou JSON
-- Destaque visual interativo diretamente na tela
-- Comparação aproximada usando distância de Levenshtein
-- Ignora elementos invisíveis
-- Limite de tamanho de texto configurável
-- Tooltip dinâmico de comparação (imune a cortes de tela e overflow)
-- Destaque residual para textos em tela que não foram validados
-- Memória de estado: Salva último texto colado e preferências de configuração
-- Compatível com qualquer framework frontend
+## How it Works
 
----
+The extension operates through these steps:
 
-# Como Funciona
+1. Collects visible texts from the current web page.
+2. Normalizes texts (handling casing, accents, and punctuation based on user settings).
+3. Compares each expected text with the texts found on the screen.
+4. Finds the most similar text using the Levenshtein distance algorithm.
+5. Classifies the result as:
+   - **Exact Match:** Perfect match after normalization.
+   - **Similar Text:** High similarity but containing differences.
+   - **Not Found:** No sufficiently similar text was found.
 
-A extensão:
+## Installation
 
-1. Coleta os textos visíveis da página
-2. Normaliza os textos
-3. Compara cada texto esperado com os textos encontrados na tela
-4. Busca o texto mais parecido
-5. Classifica o resultado como:
-   - Correspondência exata
-   - Texto parecido, mas divergente
-   - Texto não encontrado
-
-A heurística de similaridade é baseada em distância de Levenshtein.
-
----
-
-# Estrutura do Projeto
-
-```txt
-text-diff-extension/
-├── manifest.json
-├── popup.html
-├── popup.js
-├── content.js
-├── styles.css
-└── icons/
-```
-
----
-
-# Instalação
-
-## 1. Abrir extensões do Chrome
-
-Acesse:
-
-```txt
+### 1. Open Chrome Extensions
+Navigate to:
+```text
 chrome://extensions
 ```
 
----
+### 2. Enable Developer Mode
+Turn on the **"Developer mode"** toggle in the top right corner.
 
-## 2. Ativar modo desenvolvedor
+### 3. Load the Extension
+Click on:
+```text
+Load unpacked
+```
+Select the project folder (`figma-text-dif`).
 
-Habilite a opção "Modo do desenvolvedor".
+## Usage
 
----
+### Plain Text Mode
+With the **"Texto simples"** (Plain text) option enabled, simply paste one text per line:
 
-## 3. Carregar extensão
-
-Clique em:
-
-```txt
-Carregar sem compactação
+```text
+Search registration
+Search SSN
+Title code
+Academic term
 ```
 
-Selecione a pasta do projeto.
-
----
-
-# Como Usar
-
-## Modo Texto Simples
-
-Com a opção "Texto simples" habilitada, cole um texto por linha:
-
-```txt
-Buscar matrícula
-Buscar CPF
-Código do título
-Período letivo
-```
-
----
-
-## Modo JSON
-
-Com a opção desabilitada, utilize o formato JSON:
+### JSON Mode
+With the plain text option disabled, use the following JSON format:
 
 ```json
 {
   "texts": [
-    "Buscar matrícula",
-    "Buscar CPF",
-    "Código do título"
+    "Search registration",
+    "Search SSN",
+    "Title code"
   ]
 }
 ```
 
----
+### Running the Comparison
+1. Open your target application/webpage.
+2. Click on the extension icon.
+3. Configure the precision mode (case/accent/punctuation) and search targets.
+4. Paste your expected texts (Baseline).
+5. Click **"Comparar textos"** (Compare texts).
 
-## Executando a comparação
+*Note: Your configurations and baseline text will be automatically saved for subsequent tests.*
 
-1. Abra a aplicação desejada
-2. Clique na extensão
-3. Configure o modo de precisão e os alvos de busca desejados
-4. Cole os textos esperados
-5. Clique em "Comparar textos"
+## Highlight Types
 
-*Nota: Suas configurações e texto base ficarão salvos automaticamente para os próximos testes.*
+### Exact Match
+The found text perfectly matches the expected text after normalization.
+- **Visual Result:** Green outline and background.
 
----
+### Similar Text
+The found text is similar but has differences (e.g., missing a word, different punctuation, or small typo).
+- **Visual Result:** Yellow/Orange outline and background.
 
-# Tipos de Destaque
+### Text Not Found
+No text on the screen is similar enough to the expected baseline.
+- **Visual Result:** Red floating alert in the top right corner (stackable).
 
-## Correspondência Exata
+### Unmatched Text (Residual)
+Visible texts on the screen that were not part of the search baseline (if the option is enabled).
+- **Visual Result:** Purple text with a dashed underline.
 
-O texto encontrado é igual ao esperado após normalização.
+## Text Normalization
 
-Resultado visual:
-- Contorno verde
+Before comparing, texts can be normalized based on your settings:
+- Lowercase conversion
+- Accent removal (diacritics)
+- Punctuation stripping
+- Trimming and removal of duplicate spaces
 
----
-
-## Texto Similar
-
-O texto encontrado é parecido, mas possui diferenças.
-
-Exemplos:
-- Palavra faltando
-- Pontuação diferente
-- Pequeno erro de digitação
-
-Resultado visual:
-- Contorno amarelo
-
----
-
-## Texto Não Encontrado
-
-Nenhum texto suficientemente parecido foi encontrado.
-
-Resultado visual:
-- Alerta flutuante no canto superior direito (empilhável)
-
----
-
-## Texto Não Buscado (Residual)
-
-Textos visíveis na tela, mas que não foram contemplados na validação (caso a opção esteja ativa na extensão).
-
-Resultado visual:
-- Cor roxa com sublinhado tracejado
-
----
-
-# Normalização de Texto
-
-Antes da comparação, os textos são normalizados:
-
-- Conversão para lowercase
-- Remoção de espaços duplicados
-- Aplicação de trim()
-
-Exemplo:
-
-```txt
-"  Buscar   CPF "
+Example:
+```text
+"  Search   SSN "
+```
+becomes:
+```text
+"search ssn"
 ```
 
-se transforma em:
+## Similarity Heuristic
 
-```txt
-"buscar cpf"
+The extension uses the Levenshtein distance algorithm to measure similarity.
+
+Example:
+```text
+Expected:
+"Entry prohibited on premises"
+
+Found:
+"Entry prohibted on premises"
 ```
+The algorithm understands that the texts are highly similar and classifies it as a divergent text (warning) rather than completely missing.
 
----
-
-# Heurística de Similaridade
-
-A extensão utiliza distância de Levenshtein para medir similaridade entre textos.
-
-Exemplo:
-
-```txt
-Esperado:
-"Proibido a entrada no local"
-
-Encontrado:
-"Proibido entrada no local"
+Score Formula used:
+```javascript
+1 - (distance / Math.max(expected.length, found.length))
 ```
+A match is considered "Similar" if the score is $\ge$ 75%.
 
-O algoritmo entende que os textos são altamente parecidos e classifica como divergente, ao invés de completamente ausente.
+## Current Limitations
 
-Fórmula utilizada:
+The extension currently does not:
+- Understand semantic context.
+- Validate visual hierarchy.
+- Detect positioning differences.
+- Validate fonts or spacing.
+- Relate labels directly to specific components (unless checking their direct value/placeholder).
 
-```txt
-1 - (distância / tamanho máximo da string)
-```
+The current focus is strictly on textual content validation.
 
----
+## Recommended Use Cases
 
-# Limitações Atuais
-
-A extensão atualmente não:
-
-- Entende contexto semântico
-- Valida hierarquia visual
-- Detecta diferenças de posicionamento
-- Valida fonte ou espaçamento
-- Relaciona labels com componentes específicos
-
-O foco atual é validação textual.
-
----
-
-# Casos de Uso Recomendados
-
-- Validação de QA
-- Revisão de copy
-- Testes de regressão
+- QA Validation
+- Copywriting Review
+- Regression Testing
 - Design QA
-- Validação de handoff do Figma
-- Conferência de layout textual
+- Figma Handoff Validation
+- Textual Layout Checking
 
----
+## Future Improvements
 
-# Melhorias Futuras
+- Ignore specific punctuations
+- Export divergence reports
+- Side panel UI instead of popup
+- Automatic integration with Figma API
+- Semantic similarity checks
+- File upload support
+- Auto-scroll to divergences
+- Batch comparison
 
-Possíveis evoluções:
+## Technologies Used
 
-- Ignorar pontuação
-- Exportar relatório de divergências
-- Painel lateral
-- Integração automática com API do Figma
-- Similaridade semântica
-- Upload de arquivos
-- Scroll automático para divergências
-- Comparação em lote
-
----
-
-# Tecnologias Utilizadas
-
-- JavaScript
+- JavaScript (ES6+)
 - Chrome Extension Manifest V3
 - DOM APIs
-- Distância de Levenshtein
+- Levenshtein Distance Algorithm
 
----
-
-# Licença
+## License
 
 MIT
