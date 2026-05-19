@@ -176,17 +176,6 @@ The current focus is strictly on textual content validation.
 - Figma Handoff Validation
 - Textual Layout Checking
 
-## Future Improvements
-
-- Ignore specific punctuations
-- Export divergence reports
-- Side panel UI instead of popup
-- Automatic integration with Figma API
-- Semantic similarity checks
-- File upload support
-- Auto-scroll to divergences
-- Batch comparison
-
 ## Technologies Used
 
 - JavaScript (ES6+)

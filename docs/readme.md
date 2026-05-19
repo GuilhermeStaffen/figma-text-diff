@@ -176,18 +176,6 @@ O foco atual é estritamente na validação textual.
 - Validação de Handoff do Figma
 - Conferência de layout textual
 
-## Melhorias Futuras
-
-Possíveis evoluções para o projeto:
-- Ignorar pontuações específicas
-- Exportar relatório de divergências
-- Transformar a interface em um painel lateral (Side Panel)
-- Integração automática com a API do Figma
-- Verificação de similaridade semântica
-- Suporte a upload de arquivos
-- Scroll automático para divergências na tela
-- Comparação em lote
-
 ## Tecnologias Utilizadas
 
 - JavaScript (ES6+)
