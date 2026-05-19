@@ -1,4 +1,4 @@
-# Figma Text Diff
+# Text Diff for Figma
 
 🌍 [Read in English](../readme.md)
 
@@ -65,7 +65,7 @@ Clique no botão:
 ```text
 Carregar sem compactação
 ```
-Selecione a pasta do projeto (`figma-text-dif`).
+Selecione a pasta do projeto (`text-diff-for-figma`).
 
 ## Como Usar
 

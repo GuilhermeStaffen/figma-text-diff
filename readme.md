@@ -1,4 +1,4 @@
-# Figma Text Diff
+# Text Diff for Figma
 
 🌍 [Leia em Português (Brasil)](./docs/readme.md)
 
@@ -65,7 +65,7 @@ Click on:
 ```text
 Load unpacked
 ```
-Select the project folder (`figma-text-dif`).
+Select the project folder (`text-diff-for-figma`).
 
 ## Usage
 
