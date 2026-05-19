@@ -158,6 +158,22 @@
       transform: translateX(14px);
     }
 
+    .number-input {
+      width: 50px;
+      padding: 4px 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 13px;
+      text-align: right;
+      background-color: #fff;
+    }
+
+    .number-input:focus {
+      outline: none;
+      border-color: #18a0fb;
+    }
+
     .hint {
       margin-top: 16px;
       font-size: 11px;
@@ -202,6 +218,11 @@
           <input type="checkbox" id="accentSensitive" checked />
           <span class="slider"></span>
         </div>
+      </label>
+
+      <label class="switch-item">
+        <span>Tamanho máximo do texto</span>
+        <input type="number" id="maxLength" class="number-input" value="120" min="1" />
       </label>
     </div>
 

@@ -111,6 +111,8 @@ function getTextElements(options) {
     'NOSCRIPT'
   ];
 
+  const maxLength = options.maxLength || 120;
+
   const items = [];
 
   [...document.querySelectorAll('*')].forEach(el => {
@@ -127,7 +129,7 @@ function getTextElements(options) {
 
     if (hasDirectText) {
       const text = el.innerText?.trim();
-      if (text && text.length <= 120) {
+      if (text && text.length <= maxLength) {
         items.push({ el, original: text });
       }
     }
@@ -136,13 +138,13 @@ function getTextElements(options) {
     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
       if (options.validateValue && el.value?.trim()) {
         const val = el.value.trim();
-        if (val.length <= 120) {
+        if (val.length <= maxLength) {
           items.push({ el, original: val });
         }
       }
       if (options.validatePlaceholder && el.placeholder?.trim()) {
         const placeholder = el.placeholder.trim();
-        if (placeholder.length <= 120) {
+        if (placeholder.length <= maxLength) {
           items.push({ el, original: placeholder });
         }
       }

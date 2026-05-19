@@ -9,9 +9,13 @@ const checkboxIds = [
 ];
 
 // Recupera o último texto e opções salvas ao abrir o popup
-chrome.storage.local.get(['savedBaseline', ...checkboxIds], (result) => {
+chrome.storage.local.get(['savedBaseline', 'maxLength', ...checkboxIds], (result) => {
   if (result.savedBaseline !== undefined) {
     baselineInput.value = result.savedBaseline;
+  }
+
+  if (result.maxLength !== undefined) {
+    document.getElementById('maxLength').value = result.maxLength;
   }
 
   checkboxIds.forEach(id => {
@@ -24,6 +28,11 @@ chrome.storage.local.get(['savedBaseline', ...checkboxIds], (result) => {
 // Salva o texto no storage sempre que o usuário digitar ou colar algo
 baselineInput.addEventListener('input', () => {
   chrome.storage.local.set({ savedBaseline: baselineInput.value });
+});
+
+// Salva o tamanho máximo configurado
+document.getElementById('maxLength').addEventListener('input', (e) => {
+  chrome.storage.local.set({ maxLength: e.target.value });
 });
 
 // Salva o estado das opções sempre que houver alteração
@@ -68,6 +77,9 @@ document
       document
         .getElementById('validatePlaceholder')
         .checked;
+
+    const maxLength =
+      parseInt(document.getElementById('maxLength').value, 10) || 120;
 
     let parsed;
 
@@ -114,7 +126,8 @@ document
           accentSensitive,
           highlightUnmatched,
           validateValue,
-          validatePlaceholder
+          validatePlaceholder,
+          maxLength
         }
       }
     );
