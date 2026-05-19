@@ -241,10 +241,7 @@ function createFloatingAlert(expected) {
 
   div.className = 'figma-floating-alert';
 
-  div.innerText =
-    `Texto não encontrado
-
-${expected}`;
+  div.innerText = `Texto não encontrado: ${expected}`;
 
   document.body.appendChild(div);
 }

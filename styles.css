@@ -33,23 +33,24 @@
   pointer-events: none;
 }
 
-.figma-floating-alert {
-
+#figma-alert-container {
   position: fixed;
-
   top: 20px;
   right: 20px;
-
   z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 320px;
+  pointer-events: none;
+}
 
+.figma-floating-alert {
   background: #ef4444;
   color: white;
-
   padding: 12px;
-
   border-radius: 8px;
-
   font-size: 13px;
-
-  max-width: 320px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
 }
