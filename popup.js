@@ -38,6 +38,16 @@ document
         .getElementById('highlightUnmatched')
         .checked;
 
+    const validateValue =
+      document
+        .getElementById('validateValue')
+        .checked;
+
+    const validatePlaceholder =
+      document
+        .getElementById('validatePlaceholder')
+        .checked;
+
     let parsed;
 
     try {
@@ -81,7 +91,9 @@ document
         options: {
           caseSensitive,
           accentSensitive,
-          highlightUnmatched
+          highlightUnmatched,
+          validateValue,
+          validatePlaceholder
         }
       }
     );

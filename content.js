@@ -8,12 +8,12 @@ chrome.runtime.onMessage.addListener((message) => {
 
   const options = message.options || {};
 
-  const elements = getTextElements();
+  const elements = getTextElements(options);
 
-  const pageTexts = elements.map(el => ({
-    element: el,
-    text: normalize(el.innerText, options),
-    original: el.innerText,
+  const pageTexts = elements.map(item => ({
+    element: item.el,
+    text: normalize(item.original, options),
+    original: item.original,
     matched: false
   }));
 
@@ -103,7 +103,7 @@ ${Math.round(bestScore * 100)}%`
 
 });
 
-function getTextElements() {
+function getTextElements(options) {
 
   const blacklist = [
     'SCRIPT',
@@ -111,40 +111,45 @@ function getTextElements() {
     'NOSCRIPT'
   ];
 
-  return [...document.querySelectorAll('*')]
-    .filter(el => {
+  const items = [];
 
-      if (blacklist.includes(el.tagName)) {
-        return false;
-      }
+  [...document.querySelectorAll('*')].forEach(el => {
 
-      if (!isVisible(el)) {
-        return false;
-      }
+    if (blacklist.includes(el.tagName)) return;
 
-      // Garante que o elemento possui texto próprio diretamente nele
-      // Ignora containers/pais que só servem para guardar outros elementos
-      const hasDirectText = Array.from(el.childNodes).some(
-        node => node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== ''
-      );
+    if (!isVisible(el)) return;
 
-      if (!hasDirectText) {
-        return false;
-      }
+    // Garante que o elemento possui texto próprio diretamente nele
+    // Ignora containers/pais que só servem para guardar outros elementos
+    const hasDirectText = Array.from(el.childNodes).some(
+      node => node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== ''
+    );
 
+    if (hasDirectText) {
       const text = el.innerText?.trim();
-
-      if (!text) {
-        return false;
+      if (text && text.length <= 120) {
+        items.push({ el, original: text });
       }
+    }
 
-      // ignora containers gigantes
-      if (text.length > 120) {
-        return false;
+    // Verifica inputs e textareas se as opções estiverem marcadas
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      if (options.validateValue && el.value?.trim()) {
+        const val = el.value.trim();
+        if (val.length <= 120) {
+          items.push({ el, original: val });
+        }
       }
+      if (options.validatePlaceholder && el.placeholder?.trim()) {
+        const placeholder = el.placeholder.trim();
+        if (placeholder.length <= 120) {
+          items.push({ el, original: placeholder });
+        }
+      }
+    }
+  });
 
-      return true;
-    });
+  return items;
 }
 
 function normalize(text, options) {
