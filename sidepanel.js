@@ -1,3 +1,4 @@
+let currentReport = null;
 const baselineInput = document.getElementById('baseline');
 const checkboxIds = [
   'plainMode',
@@ -116,6 +117,9 @@ document
       return;
     }
 
+    document.getElementById('exportCsv').style.display = 'none';
+    currentReport = null;
+
     const [tab] =
       await chrome.tabs.query({
         active: true,
@@ -136,7 +140,45 @@ document
           validatePlaceholder,
           maxLength
         }
+      },
+      (response) => {
+        if (response && response.report) {
+          currentReport = response.report;
+          document.getElementById('exportCsv').style.display = 'block';
+        }
       }
     );
 
   });
+
+document.getElementById('exportCsv').addEventListener('click', () => {
+  if (!currentReport) return;
+
+  const headers = ['Texto Esperado', 'Texto Encontrado', 'Similaridade', 'Status'];
+
+  const rows = currentReport.map(item => {
+    // Escapar aspas duplas no CSV
+    const expected = (item.expected || '').replace(/"/g, '""');
+    const found = (item.found || '').replace(/"/g, '""');
+    
+    return [
+      `"${expected}"`,
+      `"${found}"`,
+      `"${item.similarity}"`,
+      `"${item.status}"`
+    ].join(';');
+  });
+
+  const csvContent = [headers.join(';'), ...rows].join('\n');
+  
+  // Adiciona BOM (\uFEFF) para garantir que o Excel abra com codificação UTF-8
+  const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', 'relatorio_qa_textos.csv');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});

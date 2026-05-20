@@ -1,4 +1,4 @@
-chrome.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.type !== 'COMPARE_TEXTS') return;
 
@@ -18,6 +18,8 @@ chrome.runtime.onMessage.addListener((message) => {
   }));
 
   console.log('TEXTOS ENCONTRADOS', pageTexts);
+
+  const report = [];
 
   expectedTexts.forEach(expected => {
 
@@ -39,7 +41,16 @@ chrome.runtime.onMessage.addListener((message) => {
       }
     }
 
-    if (!best) return;
+    if (!best) {
+      report.push({
+        expected: expected,
+        found: '',
+        similarity: '0%',
+        status: 'Não encontrado'
+      });
+      createFloatingAlert(expected);
+      return;
+    }
 
     console.log({
       esperado: expected,
@@ -50,6 +61,12 @@ chrome.runtime.onMessage.addListener((message) => {
     // MATCH EXATO
     if (best.text === normalizedExpected) {
       best.matched = true;
+      report.push({
+        expected: expected,
+        found: best.original,
+        similarity: '100%',
+        status: 'OK'
+      });
 
       highlight(
         best.element,
@@ -65,6 +82,12 @@ ${best.original}`
     // SIMILAR
     if (bestScore >= 0.75) {
       best.matched = true;
+      report.push({
+        expected: expected,
+        found: best.original,
+        similarity: `${Math.round(bestScore * 100)}%`,
+        status: 'Divergente'
+      });
 
       highlight(
         best.element,
@@ -85,6 +108,12 @@ ${Math.round(bestScore * 100)}%`
     }
 
     // NÃO ENCONTRADO
+    report.push({
+      expected: expected,
+      found: '',
+      similarity: '0%',
+      status: 'Não encontrado'
+    });
     createFloatingAlert(expected);
   });
 
@@ -92,6 +121,12 @@ ${Math.round(bestScore * 100)}%`
   if (options.highlightUnmatched) {
     pageTexts.forEach(item => {
       if (!item.matched) {
+        report.push({
+          expected: '',
+          found: item.original,
+          similarity: '-',
+          status: 'Não buscado'
+        });
         highlight(
           item.element,
           'unmatched',
@@ -102,6 +137,9 @@ ${Math.round(bestScore * 100)}%`
   }
 
   createNavigationPanel();
+
+  // Envia o relatório de volta
+  sendResponse({ report });
 
 });
 
