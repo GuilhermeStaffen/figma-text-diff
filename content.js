@@ -101,6 +101,8 @@ ${Math.round(bestScore * 100)}%`
     });
   }
 
+  createNavigationPanel();
+
 });
 
 function getTextElements(options) {
@@ -228,14 +230,15 @@ function removeOldHighlights() {
 
   document
     .querySelectorAll(
-      '.figma-diff-success, .figma-diff-warning, .figma-diff-unmatched'
+      '.figma-diff-success, .figma-diff-warning, .figma-diff-unmatched, .figma-diff-active-warning'
     )
     .forEach(el => {
 
       el.classList.remove(
         'figma-diff-success',
         'figma-diff-warning',
-        'figma-diff-unmatched'
+        'figma-diff-unmatched',
+        'figma-diff-active-warning'
       );
 
       el.removeAttribute('data-figma-diff');
@@ -244,6 +247,9 @@ function removeOldHighlights() {
   document
     .querySelectorAll('.figma-floating-alert')
     .forEach(el => el.remove());
+
+  const navPanel = document.getElementById('figma-nav-panel');
+  if (navPanel) navPanel.remove();
 
   const tooltip = document.getElementById('figma-dynamic-tooltip');
   if (tooltip) tooltip.style.display = 'none';
@@ -346,3 +352,57 @@ document.addEventListener('mouseout', (e) => {
   const tooltip = document.getElementById('figma-dynamic-tooltip');
   if (tooltip) tooltip.style.display = 'none';
 });
+
+// --- PAINEL DE NAVEGAÇÃO DE WARNINGS ---
+let currentWarningIndex = 0;
+let warningElements = [];
+
+function createNavigationPanel() {
+  warningElements = document.querySelectorAll('.figma-diff-warning');
+  
+  if (warningElements.length === 0) return;
+  
+  currentWarningIndex = 0;
+
+  const panel = document.createElement('div');
+  panel.id = 'figma-nav-panel';
+  
+  const text = document.createElement('span');
+  text.id = 'figma-nav-text';
+
+  function updateFocus(doScroll = true) {
+    warningElements.forEach(el => el.classList.remove('figma-diff-active-warning'));
+    text.innerText = `${currentWarningIndex + 1} / ${warningElements.length}`;
+    
+    const currentEl = warningElements[currentWarningIndex];
+    currentEl.classList.add('figma-diff-active-warning');
+    
+    if (doScroll) {
+      currentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  const btnPrev = document.createElement('button');
+  btnPrev.innerText = '↑';
+  btnPrev.onclick = () => {
+    if (warningElements.length === 0) return;
+    currentWarningIndex = (currentWarningIndex - 1 + warningElements.length) % warningElements.length;
+    updateFocus(true);
+  };
+
+  const btnNext = document.createElement('button');
+  btnNext.innerText = '↓';
+  btnNext.onclick = () => {
+    if (warningElements.length === 0) return;
+    currentWarningIndex = (currentWarningIndex + 1) % warningElements.length;
+    updateFocus(true);
+  };
+
+  panel.appendChild(btnPrev);
+  panel.appendChild(text);
+  panel.appendChild(btnNext);
+  document.body.appendChild(panel);
+
+  // Já foca o primeiro sem roubar a tela do usuário com scroll surpresa
+  updateFocus(false);
+}
